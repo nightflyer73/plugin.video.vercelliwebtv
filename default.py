@@ -53,14 +53,10 @@ def play(pageUrl):
     tree = BeautifulSoup(htmlData, convertEntities=BeautifulSoup.HTML_ENTITIES)
 
     videoUrl = None
-    iframeTags = tree.findAll("iframe")
-    for iframeTag in iframeTags:
-        src = iframeTag["src"]
-        if src.find("https://www.youtube.com") != -1:
-            videoId = src[src.rfind("/")+1:src.rfind("?")]
-            videoUrl = "plugin://plugin.video.youtube/play/?video_id=%s" % videoId
-            break
-    xbmc.log("Video URL: " + videoUrl)
+    iframeUrl = tree.find("iframe", "youtube-player")["src"]
+    if iframeUrl.find("http://www.youtube.com") != -1:
+        videoId = iframeUrl[iframeUrl.rfind("/")+1:iframeUrl.rfind("?")]
+        videoUrl = "plugin://plugin.video.youtube/play/?video_id=%s" % videoId
     
     # Check is video not supported
     if videoUrl == None: 
@@ -68,6 +64,7 @@ def play(pageUrl):
         dialog.ok("VercelliWeb.TV", "Formato video non supportato.")
         return
 
+    xbmc.log("Video URL: " + videoUrl)
     xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=xbmcgui.ListItem(path=videoUrl))
 
 # parameter values
