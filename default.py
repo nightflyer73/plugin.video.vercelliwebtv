@@ -28,6 +28,8 @@ def parameters_string_to_dict(parameters):
     return paramDict
  
 def addLinkItem(parameters, li):
+    li.setProperty('IsPlayable', 'true')
+    li.setInfo('video', {})
     url = sys.argv[0] + '?' + urllib.urlencode(parameters)
     return xbmcplugin.addDirectoryItem(handle=handle, url=url, 
         listitem=li, isFolder=False)
@@ -40,7 +42,6 @@ def show_root_menu():
     for entry in f.entries: 
         pageUrl = entry["link"]
         liStyle=xbmcgui.ListItem(entry.title + " (" + time.strftime("%d-%m-%Y %H:%M", entry.published_parsed) + ")" )
-        liStyle.setProperty('IsPlayable', 'true')
         addLinkItem({"mode": "play", "url": pageUrl}, liStyle)
 
     # TODO: Sort from most recent entry
